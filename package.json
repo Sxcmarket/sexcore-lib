@@ -1,6 +1,6 @@
 {
   "name": "sexcore-lib",
-  "version": "0.13.23",
+  "version": "0.13.24",
   "description": "A pure and powerful JavaScript Sexcoin library.",
   "author": "BitPay <dev@bitpay.com>",
   "main": "index.js",

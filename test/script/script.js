@@ -402,6 +402,60 @@ describe('Script', function() {
 
   });
 
+  describe('#isWitnessScriptHashOut', function() {
+    it('should recognize this script as p2wsh', function() {
+      Script('OP_0 32 0xa99d08fbec6958f4d4a3776c3728ec448934d25fe1142054b8b68bac866dfc3a')
+        .isWitnessScriptHashOut().should.equal(true);
+      Script('0020a99d08fbec6958f4d4a3776c3728ec448934d25fe1142054b8b68bac866dfc3a')
+        .isWitnessScriptHashOut().should.equal(true);
+    });
+    it('should NOT identify as p2wsh', function() {
+      Script('OP_0 20 0x799d283e7f92af1dd242bf4eea513c6efd117de2')
+        .isWitnessScriptHashOut().should.equal(false);
+    });
+  });
+
+  describe('#isWitnessPublicKeyHashOut', function() {
+    it('should identify as p2wpkh', function() {
+      Script('OP_0 20 0x799d283e7f92af1dd242bf4eea513c6efd117de2')
+        .isWitnessPublicKeyHashOut().should.equal(true);
+      Script('0014799d283e7f92af1dd242bf4eea513c6efd117de2').isWitnessPublicKeyHashOut().should.equal(true);
+    });
+    it('should NOT identify as p2wpkh', function() {
+      Script('OP_0 32 0xa99d08fbec6958f4d4a3776c3728ec448934d25fe1142054b8b68bac866dfc3a')
+        .isWitnessPublicKeyHashOut().should.equal(false);
+    });
+  });
+
+  describe('#isWitnessProgram', function() {
+    it('will default values to empty object', function() {
+      Script('OP_0 20 0x799d283e7f92af1dd242bf4eea513c6efd117de2')
+        .isWitnessProgram().should.equal(true);
+    });
+    it('will return false if script is data push longer than 40 bytes', function() {
+      Script('OP_0 42 0xd06863c385592423903682926825c495b6cf88fd7cd6159ffd72f778ca475d3046e7b87835d3b457cd')
+        .isWitnessProgram().should.equal(false);
+    });
+    it('will return false if first byte op_code is greater than OP_16', function() {
+      Script('OP_NOP 20 0x799d283e7f92af1dd242bf4eea513c6efd117de2')
+        .isWitnessProgram().should.equal(false);
+    });
+    it('will return true with datapush of 20', function() {
+      var values = {};
+      Script('OP_0 20 0x799d283e7f92af1dd242bf4eea513c6efd117de2')
+        .isWitnessProgram(values).should.equal(true);
+      values.version.should.equal(0);
+      values.program.toString('hex').should.equal('799d283e7f92af1dd242bf4eea513c6efd117de2');
+    });
+    it('will return true with datapush of 32', function() {
+      var values = {};
+      Script('OP_0 32 0xc756f6d660d4aaad55534cac599a0d9bf5c7e8f70363d22926291811a168c620')
+        .isWitnessProgram(values).should.equal(true);
+      values.version.should.equal(0);
+      values.program.toString('hex').should.equal('c756f6d660d4aaad55534cac599a0d9bf5c7e8f70363d22926291811a168c620');
+    });
+  });
+
   describe('#isPushOnly', function() {
     it('should know these scripts are or aren\'t push only', function() {
       Script('OP_NOP 1 0x01').isPushOnly().should.equal(false);
@@ -657,14 +711,26 @@ describe('Script', function() {
       }
     }
   });
+
+  describe('#buildWitnessMultisigOutFromScript', function() {
+    it('it will build nested witness scriptSig', function() {
+      var redeemScript = bitcore.Script();
+      var redeemHash = bitcore.crypto.Hash.sha256(redeemScript.toBuffer());
+      var s = Script.buildWitnessMultisigOutFromScript(redeemScript);
+      var buf = s.toBuffer();
+      buf[0].should.equal(0);
+      buf.slice(2, 34).toString('hex').should.equal(redeemHash.toString('hex'));
+    });
+  });
+
   describe('#buildPublicKeyHashOut', function() {
     it('should create script from livenet address', function() {
-      var address = Address.fromString('LgoQm9q3J8Ydn26juwZSdrMUCHGk3xsfKW');
+      var address = Address.fromString('S2oWJZELYYNE3ppaL3FZzxqhAhN8qXZrZi');
       var s = Script.buildPublicKeyHashOut(address);
       should.exist(s);
       s.toString().should.equal('OP_DUP OP_HASH160 20 0xecae7d092947b7ee4998e254aa48900d26d2ce1d OP_EQUALVERIFY OP_CHECKSIG');
       s.isPublicKeyHashOut().should.equal(true);
-      s.toAddress().toString().should.equal('LgoQm9q3J8Ydn26juwZSdrMUCHGk3xsfKW');
+      s.toAddress().toString().should.equal('S2oWJZELYYNE3ppaL3FZzxqhAhN8qXZrZi');
     });
     it('should create script from testnet address', function() {
       var address = Address.fromString('mxRN6AQJaDi5R6KmvMaEmZGe3n5ScV9u33');
@@ -739,14 +805,14 @@ describe('Script', function() {
     });
 
     it('inherits network property from other script', function() {
-      var s1 = new Script.fromAddress(new Address('LZfJmy3KTqD3jBRm8b4L64qFXQWP9VqorV'));
+      var s1 = new Script.fromAddress(new Address('SG5rDy7NG57vRcBeeURB63sSE246Aj5pmH'));
       var s2 = Script.buildScriptHashOut(s1);
       should.exist(s1._network);
       s1._network.should.equal(s2._network);
     });
 
     it('inherits network property form an address', function() {
-      var address = new Address('MAavStzRDhKme29TpnnC12YPZspJYiPgsu');
+      var address = new Address('Rxgt2v1baq9Fuh68xEereWVLSFdyogoFDH');
       var script = Script.buildScriptHashOut(address);
       should.exist(script._network);
       script._network.should.equal(address.network);
@@ -821,12 +887,12 @@ describe('Script', function() {
       data.should.deep.equal(new Buffer(0));
     });
     it('for a P2PKH address', function() {
-      var address = Address.fromString('LgoQm9q3J8Ydn26juwZSdrMUCHGk3xsfKW');
+      var address = Address.fromString('S2oWJZELYYNE3ppaL3FZzxqhAhN8qXZrZi');
       var script = Script.buildPublicKeyHashOut(address);
       expect(BufferUtil.equal(script.getData(), address.hashBuffer)).to.be.true();
     });
     it('for a P2SH address', function() {
-      var address = Address.fromString('MNv2feaZTyL5u3QpKqmV46RQP7gw8bg6N4');
+      var address = Address.fromString('S2oWJZELYYNE3ppaL3FZzxqhAhN8qXZrZi');
       var script = new Script(address);
       expect(BufferUtil.equal(script.getData(), address.hashBuffer)).to.be.true();
     });
@@ -862,13 +928,13 @@ describe('Script', function() {
       script.toAddress().network.should.equal(Networks.defaultNetwork);
     });
     it('for a P2PKH address', function() {
-      var stringAddress = 'LgoQm9q3J8Ydn26juwZSdrMUCHGk3xsfKW';
+      var stringAddress = 'S2oWJZELYYNE3ppaL3FZzxqhAhN8qXZrZi';
       var address = new Address(stringAddress);
       var script = new Script(address);
       script.toAddress().toString().should.equal(stringAddress);
     });
     it('for a P2SH address', function() {
-      var stringAddress = 'MNv2feaZTyL5u3QpKqmV46RQP7gw8bg6N4';
+      var stringAddress = 'S4e5ijVESNBZRJp4uhB6mfj6Yp9pa5tKBQ';
       var address = new Address(stringAddress);
       var script = new Script(address);
       script.toAddress().toString().should.equal(stringAddress);
@@ -881,12 +947,12 @@ describe('Script', function() {
       // taken from tx 7e519caca256423320b92e3e17be5701f87afecbdb3f53af598032bfd8d164f5
       var script = new Script('OP_DUP OP_HASH160 20 ' +
         '0xc8e11b0eb0d2ad5362d894f048908341fa61b6e1 OP_EQUALVERIFY OP_CHECKSIG');
-      script.toAddress().toString().should.equal('LdY75CNRKwNfGgnVwrfzZbsCSVKKTLTvNT');
+      script.toAddress().toString().should.equal('SJ1TnoLWcvRguPYvoNDoGjpcrDociHTxDp');
     });
     it('works for p2pkh input', function() {
       // taken from tx 7e519caca256423320b92e3e17be5701f87afecbdb3f53af598032bfd8d164f5
       var script = new Script('72 0x3045022100eff96230ca0f55b1e8c7a63e014f48611ff1af40875ecd33dee9062d7a6f5e2002206320405b5f6992c756e03e66b21a05a812b60996464ac6af815c2638b930dd7a01 65 0x04150defa035a2c7d826d7d5fc8ab2154bd1bb832f1a5c8ecb338f436362ad232e428b57db44677c5a8bd42c5ed9e2d7e04e742c59bee1b40080cfd57dec64b23a');
-      script.toAddress().toString().should.equal('LdY75CNRKwNfGgnVwrfzZbsCSVKKTLTvNT');
+      script.toAddress().toString().should.equal('RxGoAu9tBhDjeyGfpzZhuJYevuLsJrvvPt');
       // taken from tx 7f8f95752a59d715dae9e0008a42e7968d2736741591bbfc6685f6e1649c21ed
       var s2 = new Script('71 0x3044022017053dad84aa06213749df50a03330cfd24d6b8e7ddbb6de66c03697b78a752a022053bc0faca8b4049fb3944a05fcf7c93b2861734d39a89b73108f605f70f5ed3401 33 0x0225386e988b84248dc9c30f784b06e02fdec57bbdbd443768eb5744a75ce44a4c');
       s2.toAddress().toString().should.equal('LRi87jQ6VtLmMAC2nKTs5Z1UJb54RTZu5z');

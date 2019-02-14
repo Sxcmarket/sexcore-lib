@@ -1,5 +1,5 @@
 
 
-var litecoreTasks = require('litecore-build');
+var sexcoreTasks = require('sexcore-build');
 
-litecoreTasks('lib');
+sexcoreTasks('lib');

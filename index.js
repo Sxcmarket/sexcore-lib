@@ -1,71 +1,70 @@
 'use strict';
 
-var litecore = module.exports;
+var sexcore = module.exports;
 
 // module information
-litecore.version = 'v' + require('./package.json').version;
-litecore.versionGuard = function(version) {
+sexcore.version = 'v' + require('./package.json').version;
+sexcore.versionGuard = function(version) {
   if (version !== undefined) {
-    var message = 'More than one instance of litecore-lib found. ' +
-      'Please make sure to require litecore-lib and check that submodules do' +
-      ' not also include their own litecore-lib dependency.';
+    var message = 'More than one instance of sexcore-lib found. ' +
+      'Please make sure to require sexcore-lib and check that submodules do' +
+      ' not also include their own sexcore-lib dependency.';
     throw new Error(message);
   }
 };
-litecore.versionGuard(global._litecore);
-global._litecore = litecore.version;
+sexcore.versionGuard(global._sexcore);
+global._sexcore = sexcore.version;
 
 // crypto
-litecore.crypto = {};
-litecore.crypto.BN = require('./lib/crypto/bn');
-litecore.crypto.ECDSA = require('./lib/crypto/ecdsa');
-litecore.crypto.Hash = require('./lib/crypto/hash');
-litecore.crypto.Random = require('./lib/crypto/random');
-litecore.crypto.Point = require('./lib/crypto/point');
-litecore.crypto.Signature = require('./lib/crypto/signature');
+sexcore.crypto = {};
+sexcore.crypto.BN = require('./lib/crypto/bn');
+sexcore.crypto.ECDSA = require('./lib/crypto/ecdsa');
+sexcore.crypto.Hash = require('./lib/crypto/hash');
+sexcore.crypto.Random = require('./lib/crypto/random');
+sexcore.crypto.Point = require('./lib/crypto/point');
+sexcore.crypto.Signature = require('./lib/crypto/signature');
 
 // encoding
-litecore.encoding = {};
-litecore.encoding.Base58 = require('./lib/encoding/base58');
-litecore.encoding.Base58Check = require('./lib/encoding/base58check');
-litecore.encoding.BufferReader = require('./lib/encoding/bufferreader');
-litecore.encoding.BufferWriter = require('./lib/encoding/bufferwriter');
-litecore.encoding.Varint = require('./lib/encoding/varint');
+sexcore.encoding = {};
+sexcore.encoding.Base58 = require('./lib/encoding/base58');
+sexcore.encoding.Base58Check = require('./lib/encoding/base58check');
+sexcore.encoding.BufferReader = require('./lib/encoding/bufferreader');
+sexcore.encoding.BufferWriter = require('./lib/encoding/bufferwriter');
+sexcore.encoding.Varint = require('./lib/encoding/varint');
 
 // utilities
-litecore.util = {};
-litecore.util.buffer = require('./lib/util/buffer');
-litecore.util.js = require('./lib/util/js');
-litecore.util.preconditions = require('./lib/util/preconditions');
+sexcore.util = {};
+sexcore.util.buffer = require('./lib/util/buffer');
+sexcore.util.js = require('./lib/util/js');
+sexcore.util.preconditions = require('./lib/util/preconditions');
 
 // errors thrown by the library
-litecore.errors = require('./lib/errors');
+sexcore.errors = require('./lib/errors');
 
 // main bitcoin library
-litecore.Address = require('./lib/address');
-litecore.Block = require('./lib/block');
-litecore.MerkleBlock = require('./lib/block/merkleblock');
-litecore.BlockHeader = require('./lib/block/blockheader');
-litecore.HDPrivateKey = require('./lib/hdprivatekey.js');
-litecore.HDPublicKey = require('./lib/hdpublickey.js');
-litecore.Networks = require('./lib/networks');
-litecore.Opcode = require('./lib/opcode');
-litecore.PrivateKey = require('./lib/privatekey');
-litecore.PublicKey = require('./lib/publickey');
-litecore.Script = require('./lib/script');
-litecore.Transaction = require('./lib/transaction');
-litecore.URI = require('./lib/uri');
-litecore.Unit = require('./lib/unit');
+sexcore.Address = require('./lib/address');
+sexcore.Block = require('./lib/block');
+sexcore.MerkleBlock = require('./lib/block/merkleblock');
+sexcore.BlockHeader = require('./lib/block/blockheader');
+sexcore.HDPrivateKey = require('./lib/hdprivatekey.js');
+sexcore.HDPublicKey = require('./lib/hdpublickey.js');
+sexcore.Networks = require('./lib/networks');
+sexcore.Opcode = require('./lib/opcode');
+sexcore.PrivateKey = require('./lib/privatekey');
+sexcore.PublicKey = require('./lib/publickey');
+sexcore.Script = require('./lib/script');
+sexcore.Transaction = require('./lib/transaction');
+sexcore.URI = require('./lib/uri');
+sexcore.Unit = require('./lib/unit');
 
 // dependencies, subject to change
-litecore.deps = {};
-litecore.deps.bnjs = require('bn.js');
-litecore.deps.bs58 = require('bs58');
-litecore.deps.Buffer = Buffer;
-litecore.deps.elliptic = require('elliptic');
-litecore.deps.scryptsy = require('scryptsy');
-litecore.deps._ = require('lodash');
+sexcore.deps = {};
+sexcore.deps.bnjs = require('bn.js');
+sexcore.deps.bs58 = require('bs58');
+sexcore.deps.Buffer = Buffer;
+sexcore.deps.elliptic = require('elliptic');
+sexcore.deps.scryptsy = require('scryptsy');
+sexcore.deps._ = require('lodash');
 
 // Internal usage, exposed for testing/advanced tweaking
-litecore._HDKeyCache = require('./lib/hdkeycache');
-litecore.Transaction.sighash = require('./lib/transaction/sighash');
+sexcore.Transaction.sighash = require('./lib/transaction/sighash');

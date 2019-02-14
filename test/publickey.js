@@ -353,10 +353,10 @@ describe('PublicKey', function() {
     // wif private key, address
     // see: https://github.com/litecoin-project/litecoin/blob/master-0.10/src/test/key_tests.cpp#L20
     var data = [
-      ['6uGFQ4DSW7zh1viHZi6iiVT17CncvoaV4MHvGvJKPDaLCdymj87', 'LiUo6Zn39joYJBzPUhssbDwAywhjFcoHE3'],
-      ['6vVo7sPkeLTwVdAntrv4Gbnsyr75H8ChD3P5iyHziwaqe8mCYR5', 'LZJvLSP5SGKcFS13MHgdrVhpFUbEMB5XVC'],
-      ['T3gJYmBuZXsdd65E7NQF88ZmUP2MaUanqnZg9GFS94W7kND4Ebjq', 'Lh2G82Bi33RNuzz4UfSMZbh54jnWHVnmw8'],
-      ['T986ZKRRdnuuXLeDZuKBRrZW1ujotAncU9WTrFU1n7vMgRW75ZtF', 'LWegHWHB5rmaF5rgWYt1YN3StapRdnGJfU']
+      ['7NdKRgkujNjVej1331Ep9CNWF5BcsPRaTz61GBqiDqwTaNCp2S1', 'S9i16mSX1wgFSEc7HJxGXk61sVMRpgwfL9'],
+      ['7PM1DcakkK4ieKx4hhkoEBMCA992zLsXpD1zNQrgembPjwF7Nyy', 'RyLUYFFWzasBFhx1KYMS9kQQjV38xUej4M'],
+      ['7PcW4yPuL8jAKzbc5feJi7k2bt7q4KHxBAc8ZhoTvjk5bBLq4oF', 'S7nFty5j7jaxZPC1756Kf9hYMCWvvR9J53'],
+      ['7PfogMSB9ymMyDurAUegm2D7K6gpnBZ7k1J7QQyNgJdceUodiVy', 'SCkq7PfoVErmrBAPMMTCbxiees82a51Mqj']
     ];
     
     data.forEach(function(d){

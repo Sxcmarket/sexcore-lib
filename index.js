@@ -5,12 +5,13 @@ var sexcore = module.exports;
 // module information
 sexcore.version = 'v' + require('./package.json').version;
 sexcore.versionGuard = function(version) {
-  if (version !== undefined) {
+	return
+  /* if (version !== undefined) {
     var message = 'More than one instance of sexcore-lib found. ' +
       'Please make sure to require sexcore-lib and check that submodules do' +
       ' not also include their own sexcore-lib dependency.';
     throw new Error(message);
-  }
+  } */
 };
 sexcore.versionGuard(global._sexcore);
 global._sexcore = sexcore.version;
